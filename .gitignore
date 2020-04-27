@@ -1,3 +1,7 @@
 cmake-build-debug/
 audioSamples/
 .idea/
+videoSample/
+build/
+bin/
+release/

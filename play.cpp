@@ -2,20 +2,17 @@
 
 int main(int argc, char **argv)
 {
-    if(argc  < 2)
-    {
-        std::cout << "INFO: Audio directory is required" << std::endl;
-        return 1;
-    }
-    const std::string dir = argv[1];
-    Player *pl = nullptr;
-    contr::slist<std::string> playlist =  pl->generatePlaylist(dir);
-    pl->player_init();
+    fs::path r_path("audioSample/");
+    std::string dir = argc < 2 ? fs::absolute(r_path).string() : argv[1];
+    std::cout  << dir << std::endl;
+    Player pl;
+    contr::slist<std::string> playlist =  Player::generatePlaylist(dir);
+    pl.player_init();
     BOOST_FOREACH(auto item, playlist)
                 {
-                    pl->player(static_cast<const char *>(item.c_str()));
+                    pl.player(static_cast<const char *>(item.c_str()));
                 }
 
-    pl->player_release();
+    pl.player_release();
     return 0;
 }

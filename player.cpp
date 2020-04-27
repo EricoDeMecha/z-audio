@@ -12,6 +12,7 @@ bool Player::succeedWarn(const std::string &message , FMOD_RESULT result)
 
 void Player::player_init()
 {
+    std::cout << "Now playing..." << std::endl;
     result = FMOD::System_Create(&system);
     if(!succeedWarn("FMOD:: Failed to create the system object", result))
         //quit
@@ -66,7 +67,7 @@ void Player::player_release()
 }
 
 // --------- Playlist----------------
-contr::slist<std::string> Playlist::generatePlaylist(const std::string dir_name)
+contr::slist<std::string> Playlist::generatePlaylist(const std::string& dir_name)
 {
     contr::slist<std::string> playlist;
     try
@@ -94,7 +95,7 @@ contr::slist<std::string> Playlist::generatePlaylist(const std::string dir_name)
         std::cout << "Exception Thrown: " << e.what() << std::endl;
     }
 
-    std::cout << "---Boost List---" << std::endl;
+    std::cout << "---Playlist---" << std::endl;
     BOOST_FOREACH(auto item, playlist)
     {
         std::cout << item << std::endl;
