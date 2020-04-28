@@ -8,10 +8,12 @@
 #include <boost/container/slist.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/foreach.hpp>
+#include <boost/container/stable_vector.hpp>
 
 #include <fmod.hpp>
 #include <fmod_errors.h>
 
+#include "SFML/Window/Keyboard.hpp"
 
 
 // -----------Playlist----------
@@ -35,6 +37,9 @@ class Player : public Playlist
     FMOD::ChannelGroup *channelGroup;
     FMOD::Sound *sound;
     FMOD::Channel *channel;
+    ;
+    size_t songIndex = 0;
+    contr::stable_vector<const char*> songsNames;
 public:
     Player()
     {
@@ -48,5 +53,5 @@ public:
     void player_init();
     void player(const char *);
     void player_release();
-
+    void  update_track(const char*);
 };

@@ -30,33 +30,48 @@ FMOD_RESULT F_CALLBACK channelGroupCallback(FMOD_CHANNELCONTROL *channelControl,
 }
 void Player::player(const char *file)
 {
+    this->update_track(file);
     //create the channel group
-    result = system->createChannelGroup("Mp3 player", &channelGroup);
+    result = system->createChannelGroup( "Mp3 Player" , &channelGroup);
     if(!succeedWarn("FMOD:: Failed to create the channel group", result))
         exit(-1);
+    std::cout << "[Debug] Creating Sound " << std::endl;
     // create the sound
     system->createSound(file, FMOD_DEFAULT, nullptr, &sound);
-
+    std::cout << "[Debug] Playing Sound " << std::endl;
     // play the sound
     result = system->playSound(sound, nullptr, false, &channel);
     if(!succeedWarn("FMOD: Failed to play the sound", result))
         exit(-1);
+    std::cout << "[Debug] setting the channel " << std::endl;
     // assign the channel to the group
     result = channel->setChannelGroup(channelGroup);
     if(!succeedWarn("FMOD: Failed to assign the channel to the group", result))
         exit(-1);
-
+    std::cout << "[Debug] Beginning the callback" << std::endl;
     // set a callback on the channel
     channel->setCallback(&channelGroupCallback);
     if(!succeedWarn("FMOD: Failed to set the callback for sound", result))
         exit(-1);
-
+    std::cout << "[Debug] Status... " << std::endl;
     bool isPlaying = false;
     do {
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
         channel->isPlaying(&isPlaying);
         system->update();
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::F11))
+        {
+            channelGroup->stop();
+            break;
+        }
+        else if(sf::Keyboard::isKeyPressed(sf::Keyboard::F9))
+        {
+            channelGroup->stop();
+            const char* prev_song = songsNames[songIndex];
+            this->player(prev_song);
+        }
     }while(isPlaying);
+    songIndex++;
 }
 
 void Player::player_release()
@@ -64,6 +79,10 @@ void Player::player_release()
     sound->release();
     channelGroup->release();
     system->release();
+}
+
+void Player::update_track(const char* songName) {
+   songsNames.push_back(songName);
 }
 
 // --------- Playlist----------------
