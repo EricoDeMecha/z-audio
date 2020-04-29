@@ -90,7 +90,7 @@ contr::stable_vector<std::string> Playlist::generatePlaylist(const std::string& 
             exit(-1);
         fs::directory_iterator dirit(dir_name),end;
 
-        std::for_each(dirit , end , [playlist](const fs::directory_entry& entry)mutable{
+        std::for_each(dirit , end , [&playlist](const fs::directory_entry& entry){
             playlist.push_back(entry.path().string());
         });
     }
@@ -100,10 +100,9 @@ contr::stable_vector<std::string> Playlist::generatePlaylist(const std::string& 
     }
 
     std::cout << "---Playlist---" << std::endl;
-    BOOST_FOREACH(auto item, playlist)
+    for(size_t  i = 0; i < playlist.capacity() ; i++)
     {
-        std::cout << item << std::endl;
+        std::cout << playlist[i] << std::endl;
     }
-
     return playlist;
 }
