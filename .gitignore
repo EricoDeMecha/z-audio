@@ -5,3 +5,4 @@ videoSample/
 build/
 bin/
 release/
+updateScript.sh

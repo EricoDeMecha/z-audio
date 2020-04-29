@@ -28,9 +28,8 @@ FMOD_RESULT F_CALLBACK channelGroupCallback(FMOD_CHANNELCONTROL *channelControl,
     std::cout << "Callback called for " << controlType << std::endl;
     return FMOD_OK;
 }
-void Player::player(const char *file)
+key::keyFlag Player::player(const char *file)
 {
-    this->update_track(file);
     //create the channel group
     result = system->createChannelGroup( "Mp3 Player" , &channelGroup);
     if(!succeedWarn("FMOD:: Failed to create the channel group", result))
@@ -62,16 +61,16 @@ void Player::player(const char *file)
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::F11))
         {
             channelGroup->stop();
-            break;
+            return  key::FORWARD;
         }
         else if(sf::Keyboard::isKeyPressed(sf::Keyboard::F9))
         {
-            channelGroup->stop();
-            const char* prev_song = songsNames[songIndex];
-            this->player(prev_song);
+            return key::BACK;
+        } else{
+            continue;
         }
     }while(isPlaying);
-    songIndex++;
+    return key::OK;
 }
 
 void Player::player_release()
@@ -81,32 +80,18 @@ void Player::player_release()
     system->release();
 }
 
-void Player::update_track(const char* songName) {
-   songsNames.push_back(songName);
-}
-
 // --------- Playlist----------------
-contr::slist<std::string> Playlist::generatePlaylist(const std::string& dir_name)
+contr::stable_vector<std::string> Playlist::generatePlaylist(const std::string& dir_name)
 {
-    contr::slist<std::string> playlist;
+    contr::stable_vector<std::string> playlist;
     try
     {
-        // adding elements after
-        contr::slist<std::string>::iterator  last = playlist.before_begin();
-        /*
-         * later we will use
-         * playlist.emplace_after(last, item);
-         * ++last;
-         * */
         if(!fs::exists(dir_name) || !fs::is_directory(dir_name))
             exit(-1);
         fs::directory_iterator dirit(dir_name),end;
 
-        std::for_each(dirit , end , [playlist,last](const fs::directory_entry& entry)mutable{
-
-            playlist.emplace_after(last,entry.path().string());
-            ++last;
-
+        std::for_each(dirit , end , [playlist](const fs::directory_entry& entry)mutable{
+            playlist.push_back(entry.path().string());
         });
     }
     catch(std::exception& e)

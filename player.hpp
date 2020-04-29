@@ -21,10 +21,19 @@
 namespace contr = boost::container;
 namespace fs  = boost::filesystem;
 
+namespace key
+{
+    enum keyFlag
+    {
+        OK,
+        FORWARD,
+        BACK
+    };
+}
 class Playlist
 {
 public:
-    static contr::slist<std::string> generatePlaylist(const std::string&);
+    static contr::stable_vector<std::string> generatePlaylist(const std::string&);
 };
 
 
@@ -37,9 +46,6 @@ class Player : public Playlist
     FMOD::ChannelGroup *channelGroup;
     FMOD::Sound *sound;
     FMOD::Channel *channel;
-    ;
-    size_t songIndex = 0;
-    contr::stable_vector<const char*> songsNames;
 public:
     Player()
     {
@@ -51,7 +57,6 @@ public:
     }
     static bool succeedWarn(const std::string &message , FMOD_RESULT result);
     void player_init();
-    void player(const char *);
+    key::keyFlag player(const char *);
     void player_release();
-    void  update_track(const char*);
 };
