@@ -65,6 +65,7 @@ key::keyFlag Player::player(const char *file)
         }
         else if(sf::Keyboard::isKeyPressed(sf::Keyboard::F9))
         {
+            channelGroup->stop();
             return key::BACK;
         } else{
             continue;
